@@ -73,7 +73,6 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
         TypedArray styledAttrs = getContext().obtainStyledAttributes(attrs, R.styleable.CameraBridgeViewBase);
         if (styledAttrs.getBoolean(R.styleable.CameraBridgeViewBase_show_fps, false))
             enableFpsMeter();
-
         mCameraIndex = styledAttrs.getInt(R.styleable.CameraBridgeViewBase_camera_id, -1);
 
         getHolder().addCallback(this);
@@ -378,6 +377,11 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
             mCacheBitmap.recycle();
         }
     }
+    //function to rotate screen
+    int userRotation = 90;
+    public void setUserRotation(int userRotation){
+        this.userRotation = userRotation;
+    }
 
     /**
      * This method shall be called by the subclasses when they have valid
@@ -385,6 +389,8 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
      * then displayed on the screen.
      * @param frame - the current frame to be delivered
      */
+
+
     protected void deliverAndDrawFrame(CvCameraViewFrame frame) {
         Mat modified;
 
@@ -410,6 +416,8 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
             Canvas canvas = getHolder().lockCanvas();
             if (canvas != null) {
                 canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+                canvas.save();
+                canvas.rotate(userRotation, (canvas.getWidth()/2),(canvas.getHeight()/2));
                 if (BuildConfig.DEBUG)
                     Log.d(TAG, "mStretch value: " + mScale);
 
@@ -431,6 +439,7 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
                     mFpsMeter.measure();
                     mFpsMeter.draw(canvas, 20, 30);
                 }
+                canvas.restore();
                 getHolder().unlockCanvasAndPost(canvas);
             }
         }

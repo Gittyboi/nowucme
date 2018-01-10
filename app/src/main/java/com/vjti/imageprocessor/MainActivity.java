@@ -10,14 +10,20 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
 
 public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
 
     JavaCameraView javaCameraView;
     Mat mRgba;
-
+    static {
+        if (!OpenCVLoader.initDebug()) {
+            Log.e("MainActivity", "Initialization error");// Handle initialization error
+        }
+    }
     BaseLoaderCallback mLoaderCallBack = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -83,7 +89,8 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
-
-        return mRgba;
-    }
+//        Mat mRgbaT = mRgba.t();
+//        Core.flip(mRgba.t(), mRgbaT, 1);
+//        Imgproc.resize(mRgbaT, mRgbaT, mRgba.size());
+        return mRgba;    }
 }
